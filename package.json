@@ -1,0 +1,23 @@
+{
+  "name": "static-app",
+  "version": "1.0.0",
+  "description": "A simple static file server built with Node.js 18",
+  "main": "apps.js",
+  "scripts": {
+    "start": "node apps.js",
+    "dev": "node --watch apps.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "keywords": [
+    "static",
+    "server",
+    "node"
+  ],
+  "author": "",
+  "license": "MIT"
+}

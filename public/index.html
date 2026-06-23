@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Node.js Static App</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      padding: 2rem;
+    }
+
+    .badge {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.15;
+    }
+
+    h1 span {
+      color: #38bdf8;
+    }
+
+    p {
+      color: #94a3b8;
+      text-align: center;
+      max-width: 420px;
+      line-height: 1.7;
+    }
+
+    .cards {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      width: 160px;
+      text-align: center;
+    }
+
+    .card .icon { font-size: 1.75rem; margin-bottom: 0.5rem; }
+    .card .label { font-size: 0.8rem; color: #94a3b8; }
+    .card .value { font-size: 1rem; font-weight: 600; margin-top: 0.2rem; }
+
+    footer {
+      color: #475569;
+      font-size: 0.8rem;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="badge">Node.js 18 · Express · Static Server</div>
+
+  <h1>Your app is <span>live</span>.</h1>
+
+  <p>This page is served as a static file from the <code>public/</code> directory by Express running on Node.js 18.</p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="icon">⚡</div>
+      <div class="label">Runtime</div>
+      <div class="value">Node 18</div>
+    </div>
+    <div class="card">
+      <div class="icon">📦</div>
+      <div class="label">Framework</div>
+      <div class="value">Express</div>
+    </div>
+    <div class="card">
+      <div class="icon">🗂️</div>
+      <div class="label">Entry</div>
+      <div class="value">app.js</div>
+    </div>
+  </div>
+
+  <footer>Edit <strong>public/index.html</strong> to get started.</footer>
+</body>
+</html>
