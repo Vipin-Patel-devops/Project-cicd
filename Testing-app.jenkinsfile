@@ -1,0 +1,90 @@
+pipeline {
+    agent any
+    environment {
+        SCANNER_HOME = tool 'sonar-scanner'
+    }
+    stages {
+        stage('Checkout from Version Control') {
+            steps {
+                checkout scmGit(
+                    branches: [[name: '*/master']],
+                    extensions: [],
+                    userRemoteConfigs: [[url: 'https://github.com/Vipin-Patel-devops/Project-cicd.git']]
+                )
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh '''
+                sudo apt update -y
+                sudo apt-get install docker.io -y
+                docker build -t sample-app .
+                '''
+            }
+        }
+
+        stage('Sonarqube Analysis') {
+            steps {
+                withSonarQubeEnv('sonar-server') {
+                    sh '''
+                    $SCANNER_HOME/bin/sonar-scanner \
+                    -Dsonar.projectName=My-website \
+                    -Dsonar.projectKey=My-website
+                    '''
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
+                }
+            }
+        }
+
+        stage('aws dir') {
+            steps {
+                sh '''
+                mkdir -p ~/.aws
+                touch ~/.aws/credentials
+                '''
+            }
+        }
+
+        stage('aws config') {
+            steps {
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-creds', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh """
+mkdir -p ~/.aws
+cat > ~/.aws/credentials << EOF
+[default]
+aws_access_key_id = ${AWS_ACCESS_KEY_ID}
+aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}
+EOF
+aws s3 ls
+"""
+                }
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-creds', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh """
+aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 573219416852.dkr.ecr.ap-south-1.amazonaws.com
+docker tag sample-app:latest 573219416852.dkr.ecr.ap-south-1.amazonaws.com/nhytdfjynrsnydt:${BUILD_ID}
+docker push 573219416852.dkr.ecr.ap-south-1.amazonaws.com/nhytdfjynrsnydt:${BUILD_ID}"""
+                }
+            }
+        }
+        stage('Docker Deployment') {
+            steps {
+              sh '''docker stop sample-app || true
+                    docker rm sample-app || true
+                    docker run -d -p 3000:3000 --name sample-app sample-app'''  
+            }
+        }
+    }
+}
